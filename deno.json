@@ -1,5 +1,2 @@
 {
-  "imports": {
-    "@types/node": "npm:@types/node@^22.8.2"
-  }
 }
