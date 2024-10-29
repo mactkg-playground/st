@@ -7,16 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        target:
-          [
-            x86_64-unknown-linux-gnu,
-            x86_64-pc-windows-msvc,
-            x86_64-apple-darwin,
-            aarch64-apple-darwin,
-          ]
-
     steps:
       - name: Set up Deno
         uses: denoland/setup-deno@v2
@@ -30,12 +20,8 @@ jobs:
         run: mkdir build
 
       - name: Build binary
-        run: deno compile -L debug --target=${{ matrix.target }} --output=build/st-${{ matrix.target }} main.ts
+        run: deno compile -L debug --output=build/st main.ts
 
       - name: Compress binary
         run: |
-          if [ "${{ matrix.target }}" = "x86_64-pc-windows-msvc" ]; then
-            tar -czvf build/st-${{ matrix.target }}.tar.gz -C build st-${{ matrix.target }}.exe
-          else
-            tar -czvf build/st-${{ matrix.target }}.tar.gz -C build st-${{ matrix.target }}
-          fi
+          tar -czvf build/st.tar.gz -C build st
