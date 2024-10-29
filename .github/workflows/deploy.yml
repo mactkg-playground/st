@@ -2,30 +2,9 @@ name: Build and Deploy
 
 on:
   push:
-    tags:
-      - "*"
 
 jobs:
-  create_release:
-    runs-on: ubuntu-latest
-
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          draft: true
-          prerelease: false
-
   build:
-    needs: create_release
     runs-on: ubuntu-latest
 
     strategy:
@@ -46,8 +25,6 @@ jobs:
 
       - name: Check out repository
         uses: actions/checkout@v2
-        with:
-          repository: mactkg/st
 
       - name: Create Build Directory
         run: mkdir build
@@ -62,13 +39,3 @@ jobs:
           else
             tar -czvf build/st-${{ matrix.target }}.tar.gz -C build st-${{ matrix.target }}
           fi
-
-      - name: Upload binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: build/st-${{ matrix.target }}.tar.gz
-          asset_name: st-${{ matrix.target }}.tar.gz
-          asset_content_type: application/gzip
