@@ -20,7 +20,7 @@ jobs:
         run: mkdir build
 
       - name: Build binary
-        run: deno compile -L debug --output=build/st main.ts
+        run: deno compile -L debug --output=build/st hello.ts
 
       - name: Compress binary
         run: |
